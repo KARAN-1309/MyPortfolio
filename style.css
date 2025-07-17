@@ -1,0 +1,131 @@
+/* Custom CSS for animations and non-Tailwind specific styles */
+
+body {
+    font-family: 'Roboto Mono', monospace;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+/* KJ Logo Animation */
+.kj-logo {
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out; /* Defines transition for transform and filter properties */
+}
+.kj-logo:hover {
+    transform: scale(1.1) rotate(5deg); /* Scales up by 10% and rotates 5 degrees on hover */
+    filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6)); /* Adds a glowing shadow on hover */
+}
+.kj-logo:active {
+    transform: scale(0.95); /* Slightly shrinks when clicked */
+}
+/* Custom animations for elements not covered by Tailwind's default */
+/* Removed .animate-spin-slow as it's no longer used on the profile image */
+
+@keyframes pulse-custom {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+.animate-pulse-custom {
+    animation: pulse-custom 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes bounce-custom {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+.animate-bounce-custom {
+    animation: bounce-custom 1s infinite;
+}
+
+@keyframes matrix-fall {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(100vh); }
+}
+.matrix-drop {
+    animation: matrix-fall 10s linear infinite;
+}
+
+/* Text gradient utility classes (Tailwind applies these for bg-clip-text) */
+.bg-clip-text {
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+.text-transparent {
+    color: transparent;
+}
+
+/* Group hover utility for underlines and specific effects */
+.group-hover\:scale-x-100:hover .scale-x-0 {
+    transform: scaleX(1);
+}
+
+/* New: Neon Glow Effect for Profile Image Border on Hover */
+.profile-avatar-container .w-80.h-80 {
+    transition: transform 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+.profile-avatar-container:hover .w-80.h-80 {
+    transform: scale(1.05); /* Scales the outer container */
+    border-color: #06b6d4; /* Tailwind's cyan-400 */
+    box-shadow: 
+        0 0 10px #06b6d4, /* Smaller glow */
+        0 0 20px #06b6d4, /* Medium glow */
+        0 0 30px #06b6d4, /* Larger glow */
+        0 0 40px #0ea5e9; /* Blue accent glow */
+}
+
+/* Ensure the inner image and container also transition smoothly */
+.profile-avatar-container img {
+    transition: transform 0.3s ease-out;
+}
+.profile-avatar-container:hover img {
+    transform: scale(1.03); /* Slightly scale the image too for a layered effect */
+}
+/* Container to hide overflow */
+#skills-slider-container {
+    overflow: hidden;
+    width: 100%;
+}
+
+/* The actual track that moves */
+#skills-slider-track {
+    display: flex;
+    white-space: nowrap; /* Keep all images on one line */
+    width: fit-content; /* Allow content to dictate width initially */
+    
+    /* Apply the animation */
+    animation: scrollSkills 30s linear infinite; /* Adjust duration (e.g., 30s) for speed */
+}
+
+/* Individual skill images within the track */
+#skills-slider-track img {
+    height: 200px; /* Adjust as needed */
+    width: auto; /* Maintain aspect ratio */
+    margin: 0 25px; /* Spacing between images */
+    flex-shrink: 0; /* Prevent images from shrinking */
+    object-fit: contain; /* Ensure images fit well */
+    padding: 10px; /* Add some padding around the image for visual separation */
+    background-color: rgba(30, 30, 30, 0.5); /* Slightly darker background for each skill */
+    border-radius: 8px; /* Rounded corners for skill items */
+    border: 1px solid rgba(6, 182, 212, 0.2); /* Subtle border matching cyan */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Soft shadow */
+    transition: transform 0.3s ease; /* Smooth transition for hover effects */
+}
+
+#skills-slider-track img:hover {
+    transform: translateY(-5px) scale(1.05); /* Slight lift and scale on hover */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(6, 182, 212, 0.5); /* Enhanced shadow and subtle glow */
+}
+
+
+/* Keyframe animation for the scroll */
+@keyframes scrollSkills {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        /* This moves the track left by the width of one full set of original skills.
+           Since you've duplicated the array once, 50% of the total track width
+           is equivalent to the original set's width, creating a seamless loop. */
+        transform: translateX(-50%); 
+    }
+}
