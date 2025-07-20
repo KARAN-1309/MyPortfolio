@@ -8,49 +8,79 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Essential CSS for full-page scroll snapping */
+.blink-chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #6079e8 0%, rgba(0,255,255) 100%);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    animation: blinkPulse 2s infinite;
+}
+
+.blink-chat-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+}
+
+.blink-chat-button::before {
+    content: '👀';
+    font-size: 40px;
+    animation: blink 2s infinite;
+}
+
+@keyframes blinkPulse {
+    0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+}
+
+@keyframes blink {
+    0%, 90%, 100% { opacity: 1; }
+    95% { opacity: 0.1; }
+}
+
+df-messenger {
+    --df-messenger-button-titlebar-color: #667eea;
+    --df-messenger-chat-background-color: #f8f9ff;
+    --df-messenger-font-color: #333;
+    --df-messenger-send-icon: #667eea;
+    --df-messenger-user-message: #667eea;
+}
         html {
-            /* Ensures smooth scrolling for programmatic scrolls like navbar clicks */
             scroll-behavior: smooth;
         }
 
         #full-page-container {
-            /* Enables vertical scroll snapping, mandatory means it *must* snap */
             scroll-snap-type: y mandatory;
-            /* Makes the container scrollable and take full viewport height */
             overflow-y: scroll;
             height: 100vh;
-            /* For smoother scrolling on iOS devices */
             -webkit-overflow-scrolling: touch;
-            /* Hide scrollbar if desired (optional) */
-            /* scrollbar-width: none; */
-            /* -ms-overflow-style: none; */
         }
-
-        /* Target each section to snap to the start of the viewport */
         .snap-section {
             scroll-snap-align: start;
-            /* Ensures each section takes up the full viewport height */
             min-height: 100vh;
         }
-        /* Hide scrollbar for full-page container (optional, needs JS fallback for IE/Edge) */
-        /* #full-page-container::-webkit-scrollbar {
-            display: none;
-        } */
-
-        /* Custom styles for the infinite certificate slider */
         .slider-container {
             width: 100%;
-            overflow: hidden; /* Hides the overflowing duplicated images */
-            white-space: nowrap; /* Prevents images from wrapping */
+            overflow: hidden; 
+            white-space: nowrap; 
             position: relative;
-            padding: 20px 0; /* Vertical padding for the slider */
+            padding: 20px 0; 
         }
 
         .slider-track {
-            display: inline-flex; /* Allows content to flow horizontally */
-            animation: scroll-left 30s linear infinite; /* Adjust duration for speed */
-            /* Pause animation on hover */
+            display: inline-flex;
+            animation: scroll-left 30s linear infinite; 
             animation-play-state: running; 
         }
 
@@ -59,39 +89,39 @@
         }
 
         .slider-track img {
-            height: 250px; /* Increased Fixed height for images */
-            width: auto; /* Maintain aspect ratio */
-            margin: 0 20px; /* Increased space between images */
+            height: 250px; 
+            width: auto;
+            margin: 0 20px; 
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease-in-out;
-            flex-shrink: 0; /* Prevents images from shrinking */
+            flex-shrink: 0; 
         }
 
         .slider-track img:hover {
             transform: scale(1.05);
         }
 
-        /* Responsive adjustments for slider images */
         @media (max-width: 768px) {
             .slider-track img {
-                height: 180px; /* Smaller height on mobile */
+                height: 180px;
                 margin: 0 15px;
             }
         }
         @media (max-width: 480px) {
             .slider-track img {
-                height: 120px; /* Even smaller height on very small screens */
+                height: 120px; 
                 margin: 0 10px;
             }
         }
-
-        /* Keyframes for the infinite scroll animation */
         @keyframes scroll-left {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* Scrolls half the track length */
+            100% { transform: translateX(-50%); } 
         }
     </style>
+
+
+        
 </head>
 <body class="bg-black text-white">
 
@@ -385,8 +415,53 @@
                 </div>
             </div>
         </footer>
-
     </div>
+<script>
+function initBlinkChatbot() {
+    const chatButton = document.createElement('button');
+    chatButton.className = 'blink-chat-button';
+    chatButton.onclick = toggleBlinkChat;
+    chatButton.title = 'Chat with Blink - Karan\'s AI Assistant';
+    
+    document.body.appendChild(chatButton);
+    
+    // Hide default Dialogflow button
+    const dfMessenger = document.querySelector('df-messenger');
+    if (dfMessenger) {
+        dfMessenger.style.display = 'none';
+    }
+}
+
+function toggleBlinkChat() {
+    const dfMessenger = document.querySelector('df-messenger');
+    if (dfMessenger) {
+        // Toggle Dialogflow Messenger visibility
+        if (dfMessenger.style.display === 'none' || !dfMessenger.style.display) {
+            dfMessenger.style.display = 'block';
+            // Trigger the chat open
+            const button = dfMessenger.shadowRoot?.querySelector('[data-test-id="widgetIcon"]');
+            if (button) {
+                button.click();
+            }
+        } else {
+            dfMessenger.style.display = 'none';
+        }
+    }
+}
+document.addEventListener('DOMContentLoaded', initBlinkChatbot);
+
+window.addEventListener('load', () => {
+    setTimeout(initBlinkChatbot, 1000);
+});
+</script>
+
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="Blink"
+  agent-id="2a73ed04-33ff-435d-a113-8f9cc25f4366"
+  language-code="en"
+></df-messenger>
 
     <script src="script.js"></script>
 </body>
